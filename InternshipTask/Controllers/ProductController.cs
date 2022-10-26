@@ -91,4 +91,17 @@ public class ProductController : Controller
         await _service.DeleteProduct(id, new Guid().ToString());
         return RedirectToAction(nameof(Index));
     }
+
+    [Authorize(Roles = "admin")]
+    [HttpPost]
+    public async Task<IActionResult> GetProductBydateFormat([FromForm] DateTime from, [FromForm] DateTime to)
+    {
+        var productHistoryRepository = _service.GetProductHistoryAsync(from, to);
+        
+        if (productHistoryRepository == null)
+            return Ok("Product is not chaged");
+        else
+            return Ok(productHistoryRepository);
+    }
+
 }

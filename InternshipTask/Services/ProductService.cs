@@ -124,6 +124,23 @@ public class ProductService : IProductService
         }
     }
 
+    public async ValueTask<Result<IEnumerable<ProductHistory>>> GetProductHistoryAsync(DateTime? from, DateTime? to)
+    {
+        var query = _productHistoryRepository.GetAll();
+
+        if (from is not null)
+        {
+            query =  query.Where(p => p.UpdatedAt > from);
+        }
+
+        if (to is not null)
+        {
+            query = query.Where(p => p.UpdatedAt <= to);
+        }
+
+        return new(true) { Data = query };
+    }
+
     public async ValueTask<Result<Product>> UpdateProduct(ulong productId, Product model)
     {
         if (productId < 1)
