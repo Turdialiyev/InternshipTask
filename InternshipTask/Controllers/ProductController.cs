@@ -25,8 +25,10 @@ public class ProductController : Controller
         return View(data.Data);
     }
 
+    [Authorize(Roles = "admin")]
     public IActionResult Create() => View();
 
+    [Authorize(Roles = "admin")]
     [HttpPost]
     public async Task<IActionResult> Create(Product model)
     {
@@ -42,6 +44,7 @@ public class ProductController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = "admin")]
     [Route("Edit/{id}")]
     [HttpGet]
     public IActionResult Edit(ulong id)
@@ -56,6 +59,7 @@ public class ProductController : Controller
         return View(ProductDetails.Data);
     }
 
+    [Authorize(Roles = "admin")]
     [Route("Edit/{id}")]
     [HttpPost]
     public async Task<IActionResult> Edit(ulong id, Product model)
@@ -75,9 +79,8 @@ public class ProductController : Controller
 
         return RedirectToAction(nameof(Index));
     }
-    
-    // [Route("Delete/{id}")]
-    // [HttpGet]
+
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Delete(ulong id)
     {
         var ProductDetails = _service.GetByIdAsync(id);

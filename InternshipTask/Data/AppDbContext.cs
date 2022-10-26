@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using InternshipTask.Models;
 
 namespace InternshipTask.Data;
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext
 {
     public DbSet<Product>? Products { get; set; }
     public DbSet<ProductHistory>? ProductHistories { get; set; }
