@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using InternshipTask.Models;
 
-namespace Project.Data;
+namespace InternshipTask.Data;
 public class AppDbContext : DbContext
 {
     public DbSet<Product>? Products { get; set; }
