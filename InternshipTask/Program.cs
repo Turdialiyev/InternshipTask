@@ -1,5 +1,5 @@
+#pragma warning disable
 using InternshipTask.Data;
-using InternshipTask.Identity;
 using InternshipTask.Repositories;
 using InternshipTask.Services;
 using Microsoft.AspNetCore.Identity;
@@ -46,8 +46,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Product}/{action=Index}/{id?}");
 
-await Seed.InitializeRolesAsync(app);
-await Seed.InitializeUserAsync(app);
 
 AppDbInitialize.Seed(app);
 
