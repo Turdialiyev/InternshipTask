@@ -12,19 +12,16 @@ public class ProductService : IProductService
     private readonly IConfiguration _configuration;
     private readonly IProductRepository _productRepository;
     private readonly IProductHistoryRepository _productHistoryRepository;
-    private readonly AppDbContext _context;
 
     public ProductService(ILogger<ProductService> logger, 
                         IProductHistoryRepository productHistoryRepository, 
                         IProductRepository productRepository, 
-                        IConfiguration configuration, 
-                        AppDbContext context)
+                        IConfiguration configuration)
     {
         _logger = logger;
         _configuration = configuration;
         _productRepository = productRepository;
         _productHistoryRepository = productHistoryRepository;
-        _context = context;
     }
 
     public decimal Calculate(double vat, int amount, double price)
@@ -132,41 +129,41 @@ public class ProductService : IProductService
         }
     }
 
-    public async ValueTask<Result<IEnumerable<Object>>> GetProductHistoryAsync(DateTime? start, DateTime? end)
+    public async ValueTask<Result<IEnumerable<ProductHistory>>> GetProductHistoryAsync(DateTime? start, DateTime? end)
     {
-        var users = await _context.Users.ToListAsync();
-        var history = _productHistoryRepository.GetAll().ToList();
+        // var users =  _userRepository.GetAll().ToList();
+        // var history = _productHistoryRepository.GetAll().ToList();
 
-        var products = from product in history
-                     from user in users
-                     where product.UserId == new Guid(user.Id)
-                     select new
-                     {
-                         Id = product.Id,
-                         UserName = user.UserName,
-                         Title = product.Title,
-                         Quantiy = product.Quantiy,
-                         Price = product.Price,
-                         TotalPrice = product.TotalPrice,
-                         IsDeleted = product.IsDeleted,
-                         CreatedAt = product.CreatedAt,
-                         UpdatedAt = product.UpdatedAt,
-                         DeletedAt = product.DaletedAt,
-                     };
+        // var products = from product in history
+        //              from user in users
+        //              where product.UserId == new Guid(user.Id)
+        //              select new
+        //              {
+        //                  Id = product.Id,
+        //                  UserName = user.UserName,
+        //                  Title = product.Title,
+        //                  Quantiy = product.Quantiy,
+        //                  Price = product.Price,
+        //                  TotalPrice = product.TotalPrice,
+        //                  IsDeleted = product.IsDeleted,
+        //                  CreatedAt = product.CreatedAt,
+        //                  UpdatedAt = product.UpdatedAt,
+        //                  DeletedAt = product.DaletedAt,
+        //              };
 
         var query = _productHistoryRepository.GetAll();
 
         if (start is not null)
         {
-            products = products.Where(p => p.UpdatedAt > start);
+            query = query.Where(p => p.UpdatedAt > start);
         }
 
         if (end is not null)
         {
-            products = products.Where(p => p.UpdatedAt <= end);
+            query = query.Where(p => p.UpdatedAt <= end);
         }
 
-        return new(true) { Data = products };
+        return new(true) { Data = query };
     }
 
     public async ValueTask<Result<Product>> UpdateProduct(ulong productId, Product model)
