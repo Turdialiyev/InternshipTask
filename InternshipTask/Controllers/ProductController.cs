@@ -53,18 +53,25 @@ public class ProductController : Controller
     public async Task<IActionResult> Create(Product model)
     {
         if (!ModelState.IsValid)
+            return View(model);
+        
+        if (model.Quantiy < 0)
         {
+            ViewBag.IsQuantity = false;
+            return View(model);
+        }
+        if (model.Price < 0)
+        {
+            ViewBag.IsPrice = false;
             return View(model);
         }
 
-        model.UserId = new Guid();
+        model.UserId = new Guid(User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
 
         await _service.CreateProduct(model);
 
         return RedirectToAction(nameof(Index));
     }
-
-
 
     [Authorize(Roles = "admin")]
     [Route("Edit/{id}")]
@@ -74,13 +81,23 @@ public class ProductController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
+         if (model.Quantiy < 0)
+        {
+            ViewBag.IsQuantity = false;
+            return View(model);
+        }
+        if (model.Price < 0)
+        {
+            ViewBag.IsPrice = false;
+            return View(model);
+        }    
+
         var existProduct = _service.GetByIdAsync(id);
 
         if (existProduct.Data == null)
             return Redirect("Create");
 
-        model.UserId = new Guid();
-        // User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)!.Value
+        model.UserId = new Guid(User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
 
         await _service.UpdateProduct(id, model);
 
@@ -95,7 +112,7 @@ public class ProductController : Controller
         if (ProductDetails.Data == null)
             return Redirect("/");
 
-        await _service.DeleteProduct(id, new Guid().ToString());
+        await _service.DeleteProduct(id, User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
         return RedirectToAction(nameof(Index));
     }
 
