@@ -4,6 +4,7 @@ using Moq;
 using InternshipTask.Repositories;
 using InternshipTask.Services;
 using Xunit;
+using InternshipTask.Data;
 
 namespace unitTest;
 
@@ -13,6 +14,7 @@ public class ProductCalculate
     private readonly ProductService _productService;
     private readonly Mock<IProductRepository> _productRpository = new Mock<IProductRepository>();
     private readonly Mock<IProductHistoryRepository> _productHistoryRpository = new Mock<IProductHistoryRepository>();
+
     public ProductCalculate()
     {
         var logger = Mock.Of<ILogger<ProductService>>();
