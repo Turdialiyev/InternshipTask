@@ -14,7 +14,11 @@ public class ProductService : IProductService
     private readonly IProductHistoryRepository _productHistoryRepository;
     private readonly AppDbContext _context;
 
-    public ProductService(ILogger<ProductService> logger, IProductHistoryRepository productHistoryRepository, IProductRepository productRepository, IConfiguration configuration, AppDbContext context)
+    public ProductService(ILogger<ProductService> logger, 
+                        IProductHistoryRepository productHistoryRepository, 
+                        IProductRepository productRepository, 
+                        IConfiguration configuration, 
+                        AppDbContext context)
     {
         _logger = logger;
         _configuration = configuration;
