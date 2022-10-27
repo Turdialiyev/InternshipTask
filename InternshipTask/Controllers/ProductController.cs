@@ -122,7 +122,7 @@ public class ProductController : Controller
     {
         var products = _service.GetProductHistoryAsync(from, to);
 
-        if (products.Result.Data != null)
+        if (products ==  null)
            return Ok("Products are not chaged");
        
         return Ok(products.Result.Data);

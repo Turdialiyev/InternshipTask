@@ -10,7 +10,6 @@ public interface IProductService
     public ValueTask<Result<Product>> UpdateProduct(ulong productId, Product product);
     public ValueTask<Result<Product>> CreateProduct(Product product);
     public decimal Calculate(double vat, int amount, double price);
-    public ValueTask<Result<IEnumerable<ProductHistory>>> GetProductHistoryAsync(DateTime? from, DateTime? to);
-
+    ValueTask<Result<IEnumerable<Object>>> GetProductHistoryAsync(DateTime? start, DateTime? end);
 
 }

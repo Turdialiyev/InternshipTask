@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using InternshipTask.Models;
 using InternshipTask.Repositories;
+using Microsoft.AspNetCore.Identity;
+using InternshipTask.Data;
 
 namespace InternshipTask.Services;
 
@@ -10,13 +12,15 @@ public class ProductService : IProductService
     private readonly IConfiguration _configuration;
     private readonly IProductRepository _productRepository;
     private readonly IProductHistoryRepository _productHistoryRepository;
+    private readonly AppDbContext _context;
 
-    public ProductService(ILogger<ProductService> logger, IProductHistoryRepository productHistoryRepository, IProductRepository productRepository, IConfiguration configuration)
+    public ProductService(ILogger<ProductService> logger, IProductHistoryRepository productHistoryRepository, IProductRepository productRepository, IConfiguration configuration, AppDbContext context)
     {
         _logger = logger;
         _configuration = configuration;
         _productRepository = productRepository;
         _productHistoryRepository = productHistoryRepository;
+        _context = context;
     }
 
     public decimal Calculate(double vat, int amount, double price)
@@ -124,34 +128,41 @@ public class ProductService : IProductService
         }
     }
 
-    public async ValueTask<Result<IEnumerable<ProductHistory>>> GetProductHistoryAsync(DateTime? from, DateTime? to)
+    public async ValueTask<Result<IEnumerable<Object>>> GetProductHistoryAsync(DateTime? start, DateTime? end)
     {
-        // var person = (from p in _productHistoryRepository.GetAll()
-        //               join e in _productRepository.GetAll()
-        //               on p.UserId equals e.UserId
-        //               where p.FirstName == "KEN"
-        //               select new
-        //               {
-        //                   ID = p.BusinessEntityID,
-        //                   FirstName = p.FirstName,
-        //                   MiddleName = p.MiddleName,
-        //                   LastName = p.LastName,
-        //                   EmailID = e.EmailAddress1
-        //               }).ToList();
+        var users = await _context.Users.ToListAsync();
+        var history = _productHistoryRepository.GetAll().ToList();
+
+        var products = from product in history
+                     from user in users
+                     where product.UserId == new Guid(user.Id)
+                     select new
+                     {
+                         Id = product.Id,
+                         UserName = user.UserName,
+                         Title = product.Title,
+                         Quantiy = product.Quantiy,
+                         Price = product.Price,
+                         TotalPrice = product.TotalPrice,
+                         IsDeleted = product.IsDeleted,
+                         CreatedAt = product.CreatedAt,
+                         UpdatedAt = product.UpdatedAt,
+                         DeletedAt = product.DaletedAt,
+                     };
 
         var query = _productHistoryRepository.GetAll();
 
-        if (from is not null)
+        if (start is not null)
         {
-            query = query.Where(p => p.UpdatedAt > from);
+            products = products.Where(p => p.UpdatedAt > start);
         }
 
-        if (to is not null)
+        if (end is not null)
         {
-            query = query.Where(p => p.UpdatedAt <= to);
+            products = products.Where(p => p.UpdatedAt <= end);
         }
 
-        return new(true) { Data = query };
+        return new(true) { Data = products };
     }
 
     public async ValueTask<Result<Product>> UpdateProduct(ulong productId, Product model)
