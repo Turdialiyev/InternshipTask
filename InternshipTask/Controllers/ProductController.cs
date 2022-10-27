@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using InternshipTask.Models;
 using InternshipTask.Services;
+using InternshipTask.Repositories;
 
 namespace InternshipTask.Controllers;
 
@@ -10,10 +11,13 @@ public class ProductController : Controller
 {
     private readonly ILogger<ProductController> _logger;
     private readonly IProductService _service;
-    public ProductController(ILogger<ProductController> logger, IProductService service)
+    private readonly IProductHistoryRepository _repo;
+
+    public ProductController(ILogger<ProductController> logger, IProductService service, IProductHistoryRepository repository)
     {
         _logger = logger;
         _service = service;
+        _repo = repository;
     }
 
     public async Task<IActionResult> Index()
@@ -27,6 +31,22 @@ public class ProductController : Controller
 
     [Authorize(Roles = "admin")]
     public IActionResult Create() => View();
+
+    [Authorize(Roles = "admin")]
+    [Route("Edit/{id}")]
+    [HttpGet]
+    public IActionResult Edit(ulong id)
+    {
+        var ProductDetails = _service.GetByIdAsync(id);
+
+        if (ProductDetails.Data == null)
+            return Redirect("/");
+
+        ViewBag.CategoryId = (ulong)id;
+
+        return View(ProductDetails.Data);
+    }
+
 
     [Authorize(Roles = "admin")]
     [HttpPost]
@@ -44,20 +64,7 @@ public class ProductController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [Authorize(Roles = "admin")]
-    [Route("Edit/{id}")]
-    [HttpGet]
-    public IActionResult Edit(ulong id)
-    {
-        var ProductDetails = _service.GetByIdAsync(id);
 
-        if (ProductDetails.Data == null)
-            return Redirect("/");
-
-        ViewBag.CategoryId = (ulong)id;
-
-        return View(ProductDetails.Data);
-    }
 
     [Authorize(Roles = "admin")]
     [Route("Edit/{id}")]
@@ -94,14 +101,16 @@ public class ProductController : Controller
 
     [Authorize(Roles = "admin")]
     [HttpPost]
-    public async Task<IActionResult> GetProductBydateFormat([FromForm] DateTime from, [FromForm] DateTime to)
+    public async Task<IActionResult> GetProductBydateFormat([FromForm] DateTime? from, [FromForm] DateTime? to)
     {
-        var productHistoryRepository = _service.GetProductHistoryAsync(from, to);
-        
-        if (productHistoryRepository == null)
-            return Ok("Product is not chaged");
-        else
-            return Ok(productHistoryRepository);
+        var products = _service.GetProductHistoryAsync(from, to);
+
+        if (products.Result.Data != null)
+           return Ok("Products are not chaged");
+       
+        return Ok(products.Result.Data);
     }
 
+    [Authorize(Roles = "admin")]
+    public IActionResult History() => View();
 }

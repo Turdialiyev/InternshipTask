@@ -126,11 +126,24 @@ public class ProductService : IProductService
 
     public async ValueTask<Result<IEnumerable<ProductHistory>>> GetProductHistoryAsync(DateTime? from, DateTime? to)
     {
+        // var person = (from p in _productHistoryRepository.GetAll()
+        //               join e in _productRepository.GetAll()
+        //               on p.UserId equals e.UserId
+        //               where p.FirstName == "KEN"
+        //               select new
+        //               {
+        //                   ID = p.BusinessEntityID,
+        //                   FirstName = p.FirstName,
+        //                   MiddleName = p.MiddleName,
+        //                   LastName = p.LastName,
+        //                   EmailID = e.EmailAddress1
+        //               }).ToList();
+
         var query = _productHistoryRepository.GetAll();
 
         if (from is not null)
         {
-            query =  query.Where(p => p.UpdatedAt > from);
+            query = query.Where(p => p.UpdatedAt > from);
         }
 
         if (to is not null)

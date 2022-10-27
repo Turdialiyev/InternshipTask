@@ -41,6 +41,12 @@
                         }
                         else
                         {
+                            @if (User.IsInRole("admin"))
+                            {
+                            <li class="nav-item" style="list-style-type: none;">
+                                <a class="nav-link text-dark" asp-controller="Product" asp-action="History">History</a>
+                            </li>
+                            }
                             <li class="nav-item" style="list-style-type: none;">
                                 <a class="nav-link text-dark">@User.Identity.Name</a>
                             </li>
