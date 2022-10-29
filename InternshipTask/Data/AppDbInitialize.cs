@@ -34,7 +34,7 @@ public class AppDbInitialize
                         Title = "HDD 1TB ",
                         Quantiy = 55,
                         Price = 74.09,
-                        TotalPrice =131.2M,
+                        TotalPrice = (decimal)((1.002) * (55 * 74.09)),
                         UserId = new Guid(),
                         CreatedAt = DateTime.Now
                     },
@@ -43,7 +43,7 @@ public class AppDbInitialize
                         Title = "HDD SSD 512GB ",
                         Quantiy = 102,
                         Price = 190.99,
-                        TotalPrice =131.2M,
+                        TotalPrice = (decimal)((1.002) * (102 * 190.99)),
                         UserId = new Guid(),
                         CreatedAt = DateTime.Now
                     },
@@ -52,7 +52,7 @@ public class AppDbInitialize
                         Title = " RAM DDR4 16GB",
                         Quantiy = 47,
                         Price = 80.32,
-                        TotalPrice =131.2M,
+                        TotalPrice =(decimal)((1.002) * (47 * 80.32)),
                         UserId = new Guid(),
                         CreatedAt = DateTime.Now
                     },

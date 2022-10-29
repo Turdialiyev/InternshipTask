@@ -30,13 +30,12 @@ public class ProductCalculate
         // Arrange
         int amount = 55;
         double price = 70;
-        double vat =  _config.GetConnectionString("VAT") != null ? double.Parse(_config.GetConnectionString("VAT")) : 0;
+        double vat =  0.002;
 
         // Act
-        var result = _productService.Calculate(vat, amount, price);
-        var calculate = (decimal)((price * amount) * (1 + vat));
+        var result = (decimal)(_productService.Calculate(vat, amount, price));
 
         // Assert
-        Assert.Equal(result, calculate);
+        Assert.Equal(result, (decimal)3857.7);
     }
 }

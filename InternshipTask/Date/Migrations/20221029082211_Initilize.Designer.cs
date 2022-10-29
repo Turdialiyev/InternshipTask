@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace InternshipTask.Data.Migrations
+namespace InternshipTask.Date.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221026211044_Initilize")]
+    [Migration("20221029082211_Initilize")]
     partial class Initilize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

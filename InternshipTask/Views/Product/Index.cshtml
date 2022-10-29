@@ -17,9 +17,9 @@
                     <th scope="col">@Html.DisplayNameFor(model => model.Title)</th>
                     <th scope="col">@Html.DisplayNameFor(model => model.Quantiy)</th>
                     <th scope="col">@Html.DisplayNameFor(model => model.Price)</th>
-                    <th scope="col">Total Price</th>
                     @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
                     {
+                        <th scope="col">Total Price</th>
                         <th>Actions</th>
                     }
                 </tr>
@@ -29,22 +29,23 @@
                 {
                     <tr>
                         <th scope="row" class="align-middle">
-                            @Html.DisplayFor(modelItem => i)
+                            @i
                         </th>
                         <td class="align-middle">
-                            @Html.DisplayFor(modelItem => item.Title)
+                            @item.Title
                         </td>
                         <td class="align-middle">
-                            @Html.DisplayFor(modelItem => item.Quantiy)
+                            @item.Quantiy
                         </td>
                         <td class="align-middle">
-                            @Html.DisplayFor(modelItem => item.Price)
+                            @item.Price
                         </td>
-                        <td class="align-middle">
-                            @Html.DisplayFor(modelItem => item.TotalPrice)
-                        </td>
+                       
                         @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
                         {
+                            <td class="align-middle">
+                              @item.TotalPrice
+                            </td>
                             <td class="align-middle">
                                 <a class="btn btn-outline-primary" asp-controller="Product" asp-action="Edit" asp-route-id="@item.Id"><i
                                    class="bi bi-pencile-square"></i>Edit</a>
