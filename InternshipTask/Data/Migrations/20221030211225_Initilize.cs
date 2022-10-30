@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace InternshipTask.Date.Migrations
+namespace InternshipTask.Data.Migrations
 {
     public partial class Initilize : Migration
     {

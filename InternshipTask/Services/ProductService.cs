@@ -131,25 +131,6 @@ public class ProductService : IProductService
 
     public async ValueTask<Result<IEnumerable<ProductHistory>>> GetProductHistoryAsync(DateTime? start, DateTime? end)
     {
-        // var users =  _userRepository.GetAll().ToList();
-        // var history = _productHistoryRepository.GetAll().ToList();
-
-        // var products = from product in history
-        //              from user in users
-        //              where product.UserId == new Guid(user.Id)
-        //              select new
-        //              {
-        //                  Id = product.Id,
-        //                  UserName = user.UserName,
-        //                  Title = product.Title,
-        //                  Quantiy = product.Quantiy,
-        //                  Price = product.Price,
-        //                  TotalPrice = product.TotalPrice,
-        //                  IsDeleted = product.IsDeleted,
-        //                  CreatedAt = product.CreatedAt,
-        //                  UpdatedAt = product.UpdatedAt,
-        //                  DeletedAt = product.DaletedAt,
-        //              };
 
         var query = _productHistoryRepository.GetAll();
 

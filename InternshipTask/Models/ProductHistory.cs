@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace InternshipTask.Models;
 
 public class ProductHistory

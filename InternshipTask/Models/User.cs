@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace InternshipTask.Models;
 
-public class User
+public class User : IdentityUser
 {
     [Required]
-    public string? UserName { get; set; }
+    public override string? UserName { get; set; }
 
     [Required]
     [StringLength(20, MinimumLength = 6)]
