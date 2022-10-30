@@ -4,7 +4,6 @@ using Moq;
 using InternshipTask.Repositories;
 using InternshipTask.Services;
 using Xunit;
-using InternshipTask.Data;
 
 namespace unitTest;
 
@@ -18,8 +17,7 @@ public class ProductCalculate
     public ProductCalculate()
     {
         var logger = Mock.Of<ILogger<ProductService>>();
-        _config = new ConfigurationBuilder().Build();
-
+        _config = new ConfigurationBuilder().AddJsonFile($"appsettings.Development.json", optional: false).Build();
         _productService = new ProductService(logger, _productHistoryRpository.Object, _productRpository.Object, _config);
     }
 
@@ -30,10 +28,10 @@ public class ProductCalculate
         // Arrange
         int amount = 55;
         double price = 70;
-        double vat =  0.002;
+        var vat = _config.GetConnectionString("VAT");
 
         // Act
-        var result = (decimal)(_productService.Calculate(vat, amount, price));
+        var result = (decimal)(_productService.Calculate(double.Parse(vat), amount, price));
 
         // Assert
         Assert.Equal(result, (decimal)3857.7);
