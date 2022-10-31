@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InternshipTask.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221030211225_Initilize")]
+    [Migration("20221031022440_Initilize")]
     partial class Initilize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

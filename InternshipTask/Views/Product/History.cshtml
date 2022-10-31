@@ -1,5 +1,3 @@
-@model DateFormat
-
 @{
     ViewData["Title"] = "Search History";
 }
@@ -13,14 +11,11 @@
             <div class="col-md-8 offset-2">
                 <form asp-controller="Product" asp-action="GetProductBydateFormat" method="Post" >
                     <div class="form-group">
-                        <label asp-for="From" class="control-label"></label>
-                        <input asp-for="From" class="form-control" type="date"/>
-                        <span asp-validation-for="From" class="text-danger"></span>
+                        <label class="control-label"></label>
+                        <input name="from" class="form-control" type="date"/>
                     </div>
                     <div class="form-group">
-                        <label asp-for="To" class="control-label"></label>
-                        <input asp-for="To" class="form-control" type="date" />
-                        <span asp-validation-for="To" class="text-danger"></span>
+                        <input name="to" class="form-control" type="date" />
                     </div>
                     <br>
                     <div class="form-group">

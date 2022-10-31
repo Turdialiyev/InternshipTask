@@ -135,14 +135,10 @@ public class ProductService : IProductService
         var query = _productHistoryRepository.GetAll();
 
         if (start is not null)
-        {
             query = query.Where(p => p.UpdatedAt > start);
-        }
 
         if (end is not null)
-        {
             query = query.Where(p => p.UpdatedAt <= end);
-        }
 
         return new(true) { Data = query };
     }

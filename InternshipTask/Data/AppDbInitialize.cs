@@ -19,7 +19,7 @@ public class AppDbInitialize
         var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-        var users = config.GetSection("Identity:IdentityServer:TestUsers").Get<TestUser[]>();
+        var users = config.GetSection("Identity:IdentityServer:TestUsers").Get<User[]>();
         var roles = config.GetSection("Identity:IdentityServer:Roles").Get<string[]>();
 
         context.Database.EnsureCreated();
@@ -35,7 +35,7 @@ public class AppDbInitialize
                         Quantiy = 55,
                         Price = 74.09,
                         TotalPrice = (decimal)((1.002) * (55 * 74.09)),
-                        UserId = new Guid(),
+                        UserId = null,
                         CreatedAt = DateTime.Now
                     },
                     new Product ()
@@ -44,7 +44,7 @@ public class AppDbInitialize
                         Quantiy = 102,
                         Price = 190.99,
                         TotalPrice = (decimal)((1.002) * (102 * 190.99)),
-                        UserId = new Guid(),
+                        UserId = null,
                         CreatedAt = DateTime.Now
                     },
                     new Product ()
@@ -53,13 +53,12 @@ public class AppDbInitialize
                         Quantiy = 47,
                         Price = 80.32,
                         TotalPrice =(decimal)((1.002) * (47 * 80.32)),
-                        UserId = new Guid(),
+                        UserId = null,
                         CreatedAt = DateTime.Now
                     },
                 });
             context.SaveChanges();
         }
-
         // Added Admin Roles
 
         foreach (var role in roles)
@@ -75,9 +74,11 @@ public class AppDbInitialize
 
         foreach (var user in users)
         {
+            Guid guid = Guid.NewGuid();
             var newUser = new IdentityUser(user.UserName);
             var result = await userManager.CreateAsync(newUser, user.Password);
             var roleResult = await userManager.AddToRolesAsync(newUser, user.Roles);
         }
+
     }
 }

@@ -11,4 +11,6 @@ public class User : IdentityUser
     [Required]
     [StringLength(20, MinimumLength = 6)]
     public string? Password { get; set; }
+
+    public string[]? Roles { get; set; }
 }

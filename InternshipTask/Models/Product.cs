@@ -14,5 +14,5 @@ public class Product
     public double Price { get; set; }
     public decimal TotalPrice { get; set; }
     public DateTime CreatedAt { get; set; }
-    public Guid UserId { get; set; }
+    public Guid? UserId { get; set; }
 }
