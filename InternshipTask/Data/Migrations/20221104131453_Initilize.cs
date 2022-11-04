@@ -49,39 +49,35 @@ namespace InternshipTask.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductHistories",
+                name: "AuditLogs",
                 columns: table => new
                 {
-                    Id = table.Column<ulong>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(type: "TEXT", nullable: true),
-                    Quantiy = table.Column<int>(type: "INTEGER", nullable: false),
-                    Price = table.Column<double>(type: "REAL", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "INTEGER", nullable: true),
-                    TotalPrice = table.Column<decimal>(type: "TEXT", nullable: false),
-                    ProductId = table.Column<ulong>(type: "INTEGER", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    DaletedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    UserId = table.Column<string>(type: "TEXT", nullable: true),
+                    Type = table.Column<string>(type: "TEXT", nullable: true),
+                    TableName = table.Column<string>(type: "TEXT", nullable: true),
+                    DateTime = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    OldValues = table.Column<string>(type: "TEXT", nullable: true),
+                    NewValues = table.Column<string>(type: "TEXT", nullable: true),
+                    AffectedColumns = table.Column<string>(type: "TEXT", nullable: true),
+                    ProductId = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductHistories", x => x.Id);
+                    table.PrimaryKey("PK_AuditLogs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
-                    Id = table.Column<ulong>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     Quantiy = table.Column<int>(type: "INTEGER", nullable: false),
                     Price = table.Column<double>(type: "REAL", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "TEXT", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    TotalPrice = table.Column<decimal>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -250,7 +246,7 @@ namespace InternshipTask.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ProductHistories");
+                name: "AuditLogs");
 
             migrationBuilder.DropTable(
                 name: "Products");

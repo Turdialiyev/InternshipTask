@@ -4,7 +4,7 @@ namespace InternshipTask.Repositories;
 
 public interface IGenericRepository<TEntity> where TEntity : class
 {
-    TEntity? GetById (ulong id);
+    TEntity? GetById (int id);
     IQueryable<TEntity> GetAll();  
     ValueTask<TEntity> CreateAsync(TEntity entity);
     ValueTask<TEntity> AddAsync(TEntity entity);
@@ -12,4 +12,5 @@ public interface IGenericRepository<TEntity> where TEntity : class
     ValueTask<TEntity> Remove(TEntity entity);
     ValueTask RemoveRange(IEnumerable<TEntity> entities);
     ValueTask<TEntity> Update(TEntity entity);
+    ValueTask<int> SaveChanges(string userId);
 }

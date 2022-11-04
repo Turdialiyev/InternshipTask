@@ -15,7 +15,6 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     {
         var entry = await _context.Set<TEntity>().AddAsync(entity);
 
-        await _context.SaveChangesAsync();
 
         return entry.Entity;
     }
@@ -23,7 +22,6 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     {
         var entity = await _context.Set<TEntity>().AddAsync(model);
 
-        await _context.SaveChangesAsync();
 
         return entity.Entity;
     }
@@ -32,20 +30,18 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     {
         await _context.Set<TEntity>().AddRangeAsync(entities);
 
-        await _context.SaveChangesAsync();
     }
 
     public IQueryable<TEntity> GetAll()
       => _context.Set<TEntity>();
 
-    public TEntity? GetById(ulong id)
+    public TEntity? GetById(int id)
      => _context.Set<TEntity>().Find(id);
 
     public async ValueTask<TEntity> Remove(TEntity entity)
     {
         var entry = _context.Set<TEntity>().Remove(entity);
 
-        await _context.SaveChangesAsync();
 
         return entry.Entity;
     }
@@ -54,15 +50,18 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     {
         _context.Set<TEntity>().RemoveRange(entities);
 
-        await _context.SaveChangesAsync();
     }
 
     public async ValueTask<TEntity> Update(TEntity entity)
     {
-        var entry = _context.Set<TEntity>().Update(entity);
-
-        await _context.SaveChangesAsync();
+        var entry =  _context.Set<TEntity>().Update(entity);
 
         return entry.Entity;
+    }
+
+    public async ValueTask<int> SaveChanges(string userId)
+    {
+        var result = await _context.SaveChangesAsync(userId);
+        return result;
     }
 }

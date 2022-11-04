@@ -4,7 +4,7 @@ namespace InternshipTask.Models;
 
 public class Product
 {
-    public ulong Id { get; set; }
+    public int Id { get; set; }
     [Required]
     public string? Title { get; set; }
 
@@ -13,6 +13,4 @@ public class Product
     [Required(ErrorMessage = ("The Price field is required"))]
     public double Price { get; set; }
     public decimal TotalPrice { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public Guid? UserId { get; set; }
 }
