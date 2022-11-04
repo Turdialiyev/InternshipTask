@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using InternshipTask.Models;
 using InternshipTask.Services;
 using InternshipTask.Repositories;
+using InternshipTask.Data;
+using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace InternshipTask.Controllers;
 
@@ -11,13 +14,11 @@ public class ProductController : Controller
 {
     private readonly ILogger<ProductController> _logger;
     private readonly IProductService _service;
-    private readonly IProductHistoryRepository _repo;
 
-    public ProductController(ILogger<ProductController> logger, IProductService service, IProductHistoryRepository repository)
+    public ProductController(ILogger<ProductController> logger, IProductService service)
     {
         _logger = logger;
         _service = service;
-        _repo = repository;
     }
 
     public async Task<IActionResult> Index()
@@ -35,16 +36,18 @@ public class ProductController : Controller
     [Authorize(Roles = "admin")]
     [Route("Edit/{id}")]
     [HttpGet]
-    public IActionResult Edit(ulong id)
+    public async Task<IActionResult> Edit(int id)
     {
-        var ProductDetails = _service.GetByIdAsync(id);
+        if (id == null)
+            return NotFound();
 
-        if (ProductDetails.Data == null)
-            return Redirect("/");
+        var product =  _service.GetByIdAsync(id).Data;
+
+        if (product == null)
+            return NotFound();
 
         ViewBag.CategoryId = (ulong)id;
-
-        return View(ProductDetails.Data);
+        return View(product);
     }
 
 
@@ -54,7 +57,7 @@ public class ProductController : Controller
     {
         if (!ModelState.IsValid)
             return View(model);
-        
+
         if (model.Quantiy < 0)
         {
             ViewBag.IsQuantity = false;
@@ -66,9 +69,9 @@ public class ProductController : Controller
             return View(model);
         }
 
-        model.UserId = new Guid(User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+        var user = User?.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-        await _service.CreateProduct(model);
+        await _service.CreateProduct(user, model);
 
         return RedirectToAction(nameof(Index));
     }
@@ -76,12 +79,12 @@ public class ProductController : Controller
     [Authorize(Roles = "admin")]
     [Route("Edit/{id}")]
     [HttpPost]
-    public async Task<IActionResult> Edit(ulong id, Product model)
+    public async Task<IActionResult> Edit(int id, Product model)
     {
         if (!ModelState.IsValid)
             return View(model);
 
-         if (model.Quantiy < 0)
+        if (model.Quantiy < 0)
         {
             ViewBag.IsQuantity = false;
             return View(model);
@@ -90,29 +93,33 @@ public class ProductController : Controller
         {
             ViewBag.IsPrice = false;
             return View(model);
-        }    
+        }
+        if (ModelState.IsValid)
+        {
+            var user = User?.FindFirst(ClaimTypes.NameIdentifier).Value;
+             
+            _service.UpdateProduct(id, user, model);
+           
+            return RedirectToAction(nameof(Index));
+        }
 
-        var existProduct = _service.GetByIdAsync(id);
-
-        if (existProduct.Data == null)
-            return Redirect("Create");
-
-        model.UserId = new Guid(User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
-
-        await _service.UpdateProduct(id, model);
-
-        return RedirectToAction(nameof(Index));
+        return View(model);
     }
 
     [Authorize(Roles = "admin")]
-    public async Task<IActionResult> Delete(ulong id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var ProductDetails = _service.GetByIdAsync(id);
+        if (id == null)
+            return NotFound();
 
-        if (ProductDetails.Data == null)
-            return Redirect("/");
+        var product =  _service.GetByIdAsync(id);
+        if (product == null)
+            return NotFound();
 
-        await _service.DeleteProduct(id, User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+        var user = User?.FindFirst(ClaimTypes.NameIdentifier).Value;    
+        _logger.LogInformation($"===============> {user}");
+        _service.DeleteProduct(id, user);
+    
         return RedirectToAction(nameof(Index));
     }
 
@@ -120,14 +127,15 @@ public class ProductController : Controller
     [HttpPost]
     public async Task<IActionResult> GetProductBydateFormat([FromForm] DateTime? from, [FromForm] DateTime? to)
     {
-        var products = _service.GetProductHistoryAsync(from, to);
+        var products = _service.GetAduitByDate(from, to);
 
-        if (products ==  null)
-           return Ok("Products are not chaged");
-       
+        if (products == null)
+            return Ok("Products are not chaged");
+
         return Ok(products.Result.Data);
     }
 
     [Authorize(Roles = "admin")]
     public IActionResult History() => View();
+    
 }

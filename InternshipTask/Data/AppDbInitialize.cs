@@ -35,8 +35,6 @@ public class AppDbInitialize
                         Quantiy = 55,
                         Price = 74.09,
                         TotalPrice = (decimal)((1.002) * (55 * 74.09)),
-                        UserId = null,
-                        CreatedAt = DateTime.Now
                     },
                     new Product ()
                     {
@@ -44,8 +42,6 @@ public class AppDbInitialize
                         Quantiy = 102,
                         Price = 190.99,
                         TotalPrice = (decimal)((1.002) * (102 * 190.99)),
-                        UserId = null,
-                        CreatedAt = DateTime.Now
                     },
                     new Product ()
                     {
@@ -53,8 +49,6 @@ public class AppDbInitialize
                         Quantiy = 47,
                         Price = 80.32,
                         TotalPrice =(decimal)((1.002) * (47 * 80.32)),
-                        UserId = null,
-                        CreatedAt = DateTime.Now
                     },
                 });
             context.SaveChanges();

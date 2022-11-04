@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseInMemoryDatabase(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
@@ -20,7 +20,6 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IProductHistoryRepository, ProductHistoryRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddControllersWithViews();
 

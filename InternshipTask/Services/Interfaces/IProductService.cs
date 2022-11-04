@@ -5,11 +5,11 @@ namespace InternshipTask.Services;
 public interface IProductService
 {
     public ValueTask<Result<IEnumerable<Product>>> GetAllAsync();
-    public Result<Product> GetByIdAsync(ulong productId);
-    public ValueTask<Result<Product>> DeleteProduct(ulong productId, string userId);
-    public ValueTask<Result<Product>> UpdateProduct(ulong productId, Product product);
-    public ValueTask<Result<Product>> CreateProduct(Product product);
+    public Result<Product> GetByIdAsync(int productId);
+    public ValueTask<Result<Product>> DeleteProduct(int productId, string userId);
+    public ValueTask<Result<Product>> UpdateProduct(int productId, string user, Product product);
+    public ValueTask<Result<Product>> CreateProduct(string user, Product product);
     public decimal Calculate(double vat, int amount, double price);
-    ValueTask<Result<IEnumerable<ProductHistory>>> GetProductHistoryAsync(DateTime? start, DateTime? end);
+    public ValueTask<Result<IEnumerable<Object>>> GetAduitByDate(DateTime? from, DateTime? to);
 
 }

@@ -17,14 +17,46 @@ namespace InternshipTask.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.10");
 
-            modelBuilder.Entity("InternshipTask.Models.Product", b =>
+            modelBuilder.Entity("InternshipTask.Models.Audit", b =>
                 {
-                    b.Property<ulong>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<string>("AffectedColumns")
                         .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NewValues")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OldValues")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProductId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TableName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditLogs");
+                });
+
+            modelBuilder.Entity("InternshipTask.Models.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<double>("Price")
                         .HasColumnType("REAL");
@@ -39,53 +71,9 @@ namespace InternshipTask.Data.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("InternshipTask.Models.ProductHistory", b =>
-                {
-                    b.Property<ulong>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("DaletedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool?>("IsDeleted")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("REAL");
-
-                    b.Property<ulong>("ProductId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Quantiy")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProductHistories");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

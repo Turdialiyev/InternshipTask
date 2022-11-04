@@ -3,6 +3,7 @@ using InternshipTask.Models;
 using InternshipTask.Repositories;
 using Microsoft.AspNetCore.Identity;
 using InternshipTask.Data;
+using System.Security.Claims;
 
 namespace InternshipTask.Services;
 
@@ -11,17 +12,14 @@ public class ProductService : IProductService
     private readonly ILogger<ProductService> _logger;
     private readonly IConfiguration _configuration;
     private readonly IProductRepository _productRepository;
-    private readonly IProductHistoryRepository _productHistoryRepository;
 
-    public ProductService(ILogger<ProductService> logger, 
-                        IProductHistoryRepository productHistoryRepository, 
-                        IProductRepository productRepository, 
+    public ProductService(ILogger<ProductService> logger,
+                        IProductRepository productRepository,
                         IConfiguration configuration)
     {
         _logger = logger;
         _configuration = configuration;
         _productRepository = productRepository;
-        _productHistoryRepository = productHistoryRepository;
     }
 
     public decimal Calculate(double vat, int amount, double price)
@@ -31,60 +29,40 @@ public class ProductService : IProductService
         return calculate;
     }
 
-    public async ValueTask<Result<Product>> CreateProduct(Product model)
+    public async ValueTask<Result<Product>> CreateProduct(string userid, Product model)
     {
-
         if (model is null)
             return new("Product is invalid");
 
         var vat = double.Parse(_configuration.GetConnectionString("VAT"));
 
-
-        model.CreatedAt = DateTime.Now;
         model.TotalPrice = Calculate(vat, model.Quantiy, model.Price);
 
         try
         {
             var createdProduct = await _productRepository.AddAsync(model);
+            await _productRepository.SaveChanges(userid);
 
             if (createdProduct is null)
                 return new("Product is not created");
 
             return new(true) { Data = createdProduct };
         }
-        catch (System.Exception)
+        catch (Exception e)
         {
-            throw new NotImplementedException();
+            throw e;
         }
     }
 
-    public async ValueTask<Result<Product>> DeleteProduct(ulong productId, string userId)
+    public async ValueTask<Result<Product>> DeleteProduct(int productId, string userId)
     {
 
         var existingProduct = _productRepository.GetById(productId);
 
-        if (existingProduct is null)
-            return new("Product with given Id Not Found");
-
-        ProductHistory model = new ProductHistory()
-        {
-            Title = existingProduct.Title,
-            Quantiy = existingProduct.Quantiy,
-            Price = existingProduct.Price,
-            TotalPrice = existingProduct.Quantiy,
-            IsDeleted = true,
-            ProductId = productId,
-            UserId = new Guid(userId),
-            CreatedAt = existingProduct.CreatedAt,
-            UpdatedAt = DateTime.Now,
-            DaletedAt = DateTime.Now
-        };
-
-        var createdProductHistory = _productHistoryRepository.AddAsync(model);
-
         try
         {
-            var result = await _productRepository.Remove(existingProduct);
+            var result = await _productRepository.Remove(existingProduct!);
+            await _productRepository.SaveChanges(userId);
 
             return new(true) { Data = result };
         }
@@ -93,6 +71,8 @@ public class ProductService : IProductService
             throw new("Couldn't delete Product. Plaese contact support", e);
         }
     }
+
+
     public async ValueTask<Result<IEnumerable<Product>>> GetAllAsync()
     {
         var products = await _productRepository.GetAll().ToListAsync();
@@ -110,7 +90,7 @@ public class ProductService : IProductService
         }
     }
 
-    public Result<Product> GetByIdAsync(ulong productId)
+    public Result<Product> GetByIdAsync(int productId)
     {
         if (productId < 1)
             return new("Given id invalid");
@@ -129,68 +109,48 @@ public class ProductService : IProductService
         }
     }
 
-    public async ValueTask<Result<IEnumerable<ProductHistory>>> GetProductHistoryAsync(DateTime? start, DateTime? end)
+    public async ValueTask<Result<Product>> UpdateProduct(int productId, string user, Product model)
     {
-
-        var query = _productHistoryRepository.GetAll();
-
-        if (start is not null)
-            query = query.Where(p => p.UpdatedAt > start);
-
-        if (end is not null)
-            query = query.Where(p => p.UpdatedAt <= end);
-
-        return new(true) { Data = query };
-    }
-
-    public async ValueTask<Result<Product>> UpdateProduct(ulong productId, Product model)
-    {
-        if (productId < 1)
-            return new("Given Product Id invalid");
-
-        if (model.UserId == null)
-            return new("Given user Id invalid");
-
-        var existingProduct = _productRepository.GetById(productId);
-
-        if (existingProduct is null)
-            return new("Product given Id not found");
-
-        var createProductHistory = new ProductHistory()
-        {
-            Title = existingProduct.Title,
-            Quantiy = existingProduct.Quantiy,
-            Price = existingProduct.Price,
-            TotalPrice = existingProduct.Quantiy,
-            IsDeleted = false,
-            ProductId = productId,
-            UserId = existingProduct.UserId,
-            CreatedAt = existingProduct.CreatedAt,
-            UpdatedAt = DateTime.Now,
-            DaletedAt = null,
-
-        };
-
-        var result = _productHistoryRepository.AddAsync(createProductHistory);
-
-        var vat = double.Parse(_configuration.GetConnectionString("VAT"));
-        var calculate = Calculate(vat, model.Quantiy, model.Price);
-
-        existingProduct.TotalPrice = calculate;
-        existingProduct.Title = model.Title;
-        existingProduct.Quantiy = model.Quantiy;
-        existingProduct.Price = model.Price;
-        existingProduct.UserId = model.UserId;
-
         try
         {
-            var updatedProduct = await _productRepository.Update(existingProduct);
+            var oldProduct = _productRepository.GetById(productId);
 
-            return new(true) { Data = updatedProduct };
+            if (!ProductExists(model.Id))
+            {
+                return new("Product not found");
+            }
+
+
+            var vat = double.Parse(_configuration.GetConnectionString("VAT"));
+
+            model.TotalPrice = Calculate(vat, model.Quantiy, model.Price);
+
+            _productRepository.SaveAudit(oldProduct!, model);
+
+            await _productRepository.SaveChanges(user);
+
+            return new(true) { Data = model };
         }
         catch (Exception e)
         {
             throw new("Couldn't update Product. Please contact support", e);
         }
+    }
+    public async ValueTask<Result<IEnumerable<Object>>> GetAduitByDate(DateTime? from, DateTime? to)
+    {
+          var query = _productRepository.GetAllAuditLogs();
+
+        if (from is not null)
+            query = query.Where(p => p.DateTime > from);
+
+        if (to is not null)
+            query = query.Where(p => p.DateTime <= to);
+
+        return new(true) { Data = query };
+    }
+
+    private bool ProductExists(int id)
+    {
+        return _productRepository.GetById(id) != null ? true : false;
     }
 }
