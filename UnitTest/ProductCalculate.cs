@@ -12,13 +12,12 @@ public class ProductCalculate
     private readonly IConfigurationRoot _config;
     private readonly ProductService _productService;
     private readonly Mock<IProductRepository> _productRpository = new Mock<IProductRepository>();
-    private readonly Mock<IProductHistoryRepository> _productHistoryRpository = new Mock<IProductHistoryRepository>();
 
     public ProductCalculate()
     {
         var logger = Mock.Of<ILogger<ProductService>>();
         _config = new ConfigurationBuilder().AddJsonFile($"appsettings.Development.json", optional: false).Build();
-        _productService = new ProductService(logger, _productHistoryRpository.Object, _productRpository.Object, _config);
+        _productService = new ProductService(logger, _productRpository.Object, _config);
     }
 
     [Fact]
