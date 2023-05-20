@@ -1,84 +1,237 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Talorants.Blog</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/task.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
-        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" 
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/identity.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Talorants.Blog.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
 </head>
-
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Products</a>
-                        </li>
-                    </ul>
-                    <ul style="float: right; display: flex;">
-                        @if (!User.Identity.IsAuthenticated)
-                        {
-
-                            <li class="nav-item" style="list-style-type: none;">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account"
-                                asp-action="Login">Login</a>
-                            </li>
-                            <li class="nav-item" style="list-style-type: none;">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account"
-                                asp-action="Register">Register</a>
-                            </li>
-                        }
-                        else
-                        {
-                            @if (User.IsInRole("admin"))
-                            {
-                            <li class="nav-item" style="list-style-type: none;">
-                                <a class="nav-link text-dark" asp-controller="Product" asp-action="History">History</a>
-                            </li>
-                            }
-                            <li class="nav-item" style="list-style-type: none;">
-                                <a class="nav-link text-dark">@User.Identity.Name</a>
-                            </li>
-                            <li class="nav-item" style="list-style-type: none;">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account"
-                                asp-action="Logout">Logout</a>
-                            </li>
-                        }
-                    </ul>   
+   <div id="__nuxt">
+        <!---->
+        <div id="__layout">
+            <div>
+                <div data-v-320788ee="" class="header-element" style="box-shadow: none;">
+                    <div data-v-320788ee="" class="header-main-page">
+                        <img
+                            data-v-320788ee=""
+                            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZYAAADhAgMAAACWxnvIAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAJUExURfXDfUdwTPXCeubKP2EAAAADdFJOUzMAF1+IGtAAAAJ/SURBVHja7dY9al0xEIZhS6Bi3GsDgSmS1bj5DsGVy5BVpE4/fQhcCF5l8E9h+9w/nSO9hbA28DAz3wy6uQGe3xHKTZ2KiU+m/Qlh8ifT/tJUjE3FlKkYn4qpUzExFaOZmDwVkxjGpmLKVIwzTJ2KCYbRTExmmDQVYwxTpmKcYSrDxFSMECYzTJqKMYYpDOMMUxkmpmKEMJlhEsMYwxSGcYapUzGaickMkxjGGKYwjDNMZZhgGCFMZpjEMMYwhWEqwwTDCGEywySGMYYpDOMMUxlGCJMZJjGMMUxhmMowwTBCmMwwxjCFYZxhgmGEMJlhEsMUhnGGCYYRwmSGMYYpDFMZJhDmXQLGMYlhCsM4wwTDCGESwxjDOMMEwwhhEsMUhnGGCYTJQpjEMIVhKsMIYTLDGMM4wwTCrEczhDGGcYapDCOESQxTGKYyjBAmMYwzTCBMFsIYwzjDBMIcH013xhimMowQJjGMM0wgzIk492YKw1SEOdmzvowxjDOMEMYYxhlGCGMM4wwjhDGGqQiThTDGMBVhzvesG1MYJhAmCWEqwlwIQC+mMEwgjAlhDghzMQB9GEeYK4rpwXxlGF3FPIxezRdmGb2aL4weBq/mK7OML+aJ2VXOdcU8M8vgmL0yO1JdWhj92noAoon5Pu6avWU2lpPVyNwP+WismE2hNjUzy8D5v2E2pMC1gdGfRuVWm5hlyDFbMY1ta2nZO6YpbabNTMOS5tjBLGMG85G5+hgctIvRj25fprPMVU67smKucDYoa+ais0U5wlxwNinHGP3smbHTjO5P7eltqCMj/TuqfJP6Mlr+rpFQd2YF7UHOMU9ZePzyTPx+PGjfu/sPx3fd4XJMTQgAAAAASUVORK5CYII="
+                            alt=""
+                            class="logo-round"
+                        />
+                        
+                        <div data-v-320788ee="" class="container">
+                            <div data-v-320788ee="" class="row">
+                                <div data-v-320788ee="" class="col-6 col-md-4">
+                                    <div data-v-320788ee="" class="logo">
+                                        <a data-v-320788ee="" href="#" aria-current="page" class="nuxt-link-exact-active nuxt-link-active">
+                                            <span class="logo-text">Talorant.uz</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div data-v-320788ee="" class="col-md-8">
+                                    <div data-v-320788ee="" class="menu-list">
+                                        <ul data-v-320788ee="">
+                                            <li data-v-320788ee=""><a data-v-320788ee="" href="/oz/" aria-current="page" class="nuxt-link-exact-active nuxt-link-active">Asosiy</a></li>
+                                            <li data-v-320788ee=""><a data-v-320788ee="" href="/oz/about-us/" class="">Biz haqimizda</a></li>
+                                            <li data-v-320788ee=""><a data-v-320788ee="" href="#">Bloglar</a></li>
+                                            @* <li data-v-320788ee="" class="language-dropdown">
+                                                <div data-v-320788ee="" class="dropdown b-dropdown language-dropdown btn-group" id="__BVID__12">
+                                                    <!---->
+                                                    <button aria-haspopup="true" aria-expanded="false" type="button" class="btn dropdown-toggle btn-link" id="__BVID__12__BV_toggle_">
+                                                        <div data-v-320788ee="" class="active-drops"><span data-v-320788ee="">O‘z</span></div>
+                                                    </button>
+                                                    <ul role="menu" tabindex="-1" class="dropdown-menu dropdown-menu-right" aria-labelledby="__BVID__12__BV_toggle_">
+                                                        <li data-v-320788ee="" role="presentation">
+                                                            <a href="#" class="dropdown-item" role="menuitem" target="_self">
+                                                                Рус
+                                                            </a>
+                                                        </li>
+                                                        <li data-v-320788ee="" role="presentation">
+                                                            <a href="#" class="dropdown-item" role="menuitem" target="_self">
+                                                                Eng
+                                                            </a>
+                                                        </li>
+                                                        <li data-v-320788ee="" role="presentation">
+                                                            <a href="#" aria-current="page" class="dropdown-item nuxt-link-exact-active nuxt-link-active" role="menuitem" target="_self">
+                                                                O‘z
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li> *@
+                                            @if(!User.Identity.IsAuthenticated)
+                                            {
+                                                <li data-v-320788ee="">
+                                                    <button class="li-btn" data-v-320788ee="">
+                                                        <a class="li-a" asp-controller="Account" asp-action="register">Ro'yxatdan o'tish</a>
+                                                    </button>
+                                                </li>
+                                            }
+                                            else
+                                            {
+                                                <li data-v-320788ee="">
+                                                    <b> @User.Identity.Name </b>
+                                                </li>
+                                                <li>
+                                                    <button class="li-btn" data-v-320788ee="">
+                                                        <a class="li-a" asp-controller="Post" asp-action="CreatePost">Blog yozish</a>
+                                                    </button>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div data-v-320788ee="" class="col-6 col-md">
+                                    <div data-v-320788ee="" class="hamburger">
+                                        <a data-v-320788ee="" class="hamburger-img icon">
+                                            <img
+                                                data-v-320788ee=""
+                                                src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTQiIHZpZXdCb3g9IjAgMCAxOCAxNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMSAxM0gxN00xIDFIMTcgMXpNMSA3SDkgMXoiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4="
+                                                alt=""
+                                            />
+                                        </a>
+                                    </div>
+                                </div>
+                                <!---->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @RenderBody()
+                <div class="footer-element">
+                    <div class="footer-main-page">
+                        <div class="blue-wave">
+                            <img src="~/Image/cloud.e8a5839.png" alt="" class="cloud" />
+                            <div class="white-wave">
+                                <div class="container">
+                                    <div class="top">
+                                        <div class="row">
+                                            <div class="col-md-4 col-12">
+                                                <div class="menu-list">
+                                                    <ul>
+                                                        <li><a href="/oz/" aria-current="page" class="nuxt-link-exact-active nuxt-link-active">Asosiy</a></li>
+                                                        <li><a href="/oz/about-us/" class="">Biz haqimizda</a></li>
+                                                        <li><a href="#">Bloglar</a></li>
+                                                    </ul>
+                                                    <p>Talorants.uz - Kelajak sohalari haqida kearakli ma'lumotlardan iborat O'zbekistondagi birinchi sayt.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 col-12">
+                                                <div class="img-wrapper">
+                                                    <a href="/oz/" aria-current="page" class="nuxt-link-exact-active nuxt-link-active"><img src="~/Image/logo.9c2e0f0.svg" alt="" /></a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 col-12">
+                                                <div class="info-img">
+                                                    <img
+                                                        src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBjbGlwLXBhdGg9InVybCgjY2xpcDApIj48cGF0aCBkPSJNMTcuNSA4LjMzMzVDMTcuNSAxNC4xNjY4IDEwIDE5LjE2NjggMTAgMTkuMTY2OCAxMCAxOS4xNjY4IDIuNSAxNC4xNjY4IDIuNSA4LjMzMzUgMi41IDYuMzQ0MzcgMy4yOTAxOCA0LjQzNjcyIDQuNjk2NyAzLjAzMDE5IDYuMTAzMjIgMS42MjM2NyA4LjAxMDg4LjgzMzQ5NiAxMCAuODMzNDk2IDExLjk4OTEuODMzNDk2IDEzLjg5NjggMS42MjM2NyAxNS4zMDMzIDMuMDMwMTkgMTYuNzA5OCA0LjQzNjcyIDE3LjUgNi4zNDQzNyAxNy41IDguMzMzNXoiIHN0cm9rZT0iIzcwNzM3NyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTAgMTAuODMzNUMxMS4zODA3IDEwLjgzMzUgMTIuNSA5LjcxNDIxIDEyLjUgOC4zMzM1IDEyLjUgNi45NTI3OCAxMS4zODA3IDUuODMzNSAxMCA1LjgzMzUgOC42MTkyOSA1LjgzMzUgNy41IDYuOTUyNzggNy41IDguMzMzNSA3LjUgOS43MTQyMSA4LjYxOTI5IDEwLjgzMzUgMTAgMTAuODMzNXoiIHN0cm9rZT0iIzcwNzM3NyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L2c+PGRlZnM+PGNsaXBQYXRoIGlkPSJjbGlwMCI+PHBhdGggZD0iTTAgMGgyMHYyMEgweiIgZmlsbD0iI2ZmZiIvPjwvY2xpcFBhdGg+PC9kZWZzPjwvc3ZnPg=="
+                                                        alt=""
+                                                    />
+                                                    <span>Manzil: Toshkent sh., Mirzo Ulugʻbek tumani, Ziyolilar kochaasi, 9-uy</span> <br />
+                                                </div>
+                                                <div class="info-img">
+                                                    <img
+                                                        src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMy4zMzM2NiAzLjMzMzVIMTYuNjY3QzE3LjU4MzcgMy4zMzM1IDE4LjMzMzcgNC4wODM1IDE4LjMzMzcgNS4wMDAxNlYxNS4wMDAyQzE4LjMzMzcgMTUuOTE2OCAxNy41ODM3IDE2LjY2NjggMTYuNjY3IDE2LjY2NjhIMy4zMzM2NkMyLjQxNjk5IDE2LjY2NjggMS42NjY5OSAxNS45MTY4IDEuNjY2OTkgMTUuMDAwMlY1LjAwMDE2QzEuNjY2OTkgNC4wODM1IDIuNDE2OTkgMy4zMzM1IDMuMzMzNjYgMy4zMzM1eiIgc3Ryb2tlPSIjNzA3Mzc3IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0xOC4zMzM3IDUgMTAuMDAwMyAxMC44MzMzIDEuNjY2OTkgNSIgc3Ryb2tlPSIjNzA3Mzc3IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="
+                                                        alt=""
+                                                    />
+                                                    <a href="mailto:colearninguz@gmail.com"><span>talorantsuz@gmail.com</span></a>
+                                                </div>
+                                                <div class="social">
+                                                    <a href="https://www.facebook.com/colearninguz" target="_blank">
+                                                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" class="social-icon">
+                                                            <path
+                                                                d="M19.1731 4H16.1259C14.7789 4 13.4871 4.54654 12.5347 5.51938C11.5823 6.49223 11.0472 7.81169 11.0472 9.1875V12.3H8V16.45H11.0472V24.75H15.1101V16.45H18.1573L19.1731 12.3H15.1101V9.1875C15.1101 8.91234 15.2172 8.64845 15.4076 8.45388C15.5981 8.25931 15.8565 8.15 16.1259 8.15H19.1731V4Z"
+                                                                stroke="#707377"
+                                                                stroke-width="1.55055"
+                                                                stroke-linecap="round"
+                                                                stroke-linejoin="round"
+                                                            ></path>
+                                                        </svg>
+                                                    </a>
+                                                    <a href="https://www.instagram.com/colearninguz/" target="_blank">
+                                                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" class="social-icon">
+                                                            <path
+                                                                d="M13.9972 8.61248C11.0158 8.61248 8.60976 11.0186 8.60976 14C8.60976 16.9814 11.0158 19.3875 13.9972 19.3875C16.9785 19.3875 19.3846 16.9814 19.3846 14C19.3846 11.0186 16.9785 8.61248 13.9972 8.61248ZM13.9972 17.5015C12.0692 17.5015 10.4958 15.9281 10.4958 14C10.4958 12.0719 12.0692 10.4985 13.9972 10.4985C15.9252 10.4985 17.4986 12.0719 17.4986 14C17.4986 15.9281 15.9252 17.5015 13.9972 17.5015ZM19.6052 7.13624C18.9092 7.13624 18.347 7.69837 18.347 8.39446C18.347 9.09056 18.9092 9.65269 19.6052 9.65269C20.3013 9.65269 20.8634 9.09318 20.8634 8.39446C20.8636 8.22917 20.8312 8.06546 20.7681 7.91272C20.7049 7.75997 20.6123 7.62118 20.4954 7.5043C20.3785 7.38742 20.2397 7.29475 20.087 7.23159C19.9342 7.16843 19.7705 7.13603 19.6052 7.13624ZM24.4988 14C24.4988 12.55 24.512 11.1132 24.4305 9.66582C24.3491 7.98469 23.9656 6.49268 22.7363 5.26335C21.5044 4.03139 20.015 3.65051 18.3339 3.56908C16.8839 3.48765 15.4471 3.50078 13.9998 3.50078C12.5499 3.50078 11.113 3.48765 9.66571 3.56908C7.9846 3.65051 6.49262 4.03402 5.26331 5.26335C4.03138 6.4953 3.6505 7.98469 3.56908 9.66582C3.48765 11.1158 3.50078 12.5526 3.50078 14C3.50078 15.4474 3.48765 16.8868 3.56908 18.3342C3.6505 20.0153 4.03401 21.5073 5.26331 22.7367C6.49525 23.9686 7.9846 24.3495 9.66571 24.4309C11.1157 24.5124 12.5525 24.4992 13.9998 24.4992C15.4498 24.4992 16.8866 24.5124 18.3339 24.4309C20.015 24.3495 21.507 23.966 22.7363 22.7367C23.9682 21.5047 24.3491 20.0153 24.4305 18.3342C24.5146 16.8868 24.4988 15.45 24.4988 14ZM22.1873 20.1939C21.9956 20.672 21.7644 21.0292 21.394 21.397C21.0237 21.7674 20.6691 21.9985 20.191 22.1903C18.8093 22.7393 15.5286 22.6158 13.9972 22.6158C12.4658 22.6158 9.18239 22.7393 7.80073 22.1929C7.32267 22.0012 6.96543 21.77 6.59769 21.3996C6.22732 21.0292 5.99617 20.6746 5.80442 20.1966C5.25806 18.8123 5.38152 15.5314 5.38152 14C5.38152 12.4686 5.25806 9.18512 5.80442 7.80344C5.99617 7.32537 6.22732 6.96812 6.59769 6.60038C6.96806 6.23263 7.32267 5.99884 7.80073 5.80709C9.18239 5.26072 12.4658 5.38418 13.9972 5.38418C15.5286 5.38418 18.812 5.26072 20.1936 5.80709C20.6717 5.99884 21.0289 6.23 21.3967 6.60038C21.767 6.97075 21.9982 7.32537 22.1899 7.80344C22.7363 9.18512 22.6128 12.4686 22.6128 14C22.6128 15.5314 22.7363 18.8123 22.1873 20.1939Z"
+                                                                fill="#707377"
+                                                            ></path>
+                                                        </svg>
+                                                    </a>
+                                                    <a href="https://www.youtube.com/channel/UCII_oOu2H95cZneKdgpZRTA?view_as=subscriber" target="_blank">
+                                                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" class="social-icon">
+                                                            <path
+                                                                d="M24.0229 9.50227C23.9 9.01155 23.6499 8.56193 23.2977 8.19882C22.9455 7.83572 22.5037 7.57199 22.0169 7.43428C20.2384 7 13.1246 7 13.1246 7C13.1246 7 6.01066 7 4.23218 7.47564C3.74543 7.61335 3.30363 7.87708 2.95142 8.24018C2.59921 8.60329 2.34906 9.05291 2.22623 9.54363C1.90074 11.3485 1.74153 13.1795 1.75059 15.0135C1.73899 16.8613 1.89821 18.7062 2.22623 20.5247C2.36164 21.0002 2.6174 21.4327 2.96879 21.7804C3.32018 22.1282 3.75532 22.3795 4.23218 22.5099C6.01066 22.9856 13.1246 22.9856 13.1246 22.9856C13.1246 22.9856 20.2384 22.9856 22.0169 22.5099C22.5037 22.3722 22.9455 22.1085 23.2977 21.7454C23.6499 21.3823 23.9 20.9327 24.0229 20.442C24.3459 18.6506 24.5051 16.8337 24.4985 15.0135C24.5101 13.1657 24.3509 11.3208 24.0229 9.50227V9.50227Z"
+                                                                stroke="#707377"
+                                                                stroke-width="1.7"
+                                                                stroke-linecap="round"
+                                                                stroke-linejoin="round"
+                                                            ></path>
+                                                            <path d="M10.7979 18.3937L16.7429 15.0128L10.7979 11.6318V18.3937Z" stroke="#707377" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                        </svg>
+                                                    </a>
+                                                    <a href="https://twitter.com/colearninguz" target="_blank">
+                                                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" class="social-icon">
+                                                            <path
+                                                                d="M25.4586 5.99056L26.2169 5.9417C26.2071 5.79635 26.1535 5.65706 26.063 5.54128C25.9725 5.42549 25.849 5.33836 25.7079 5.29078C25.5669 5.2432 25.4147 5.23729 25.2702 5.27379C25.1258 5.3103 24.9956 5.38759 24.8959 5.49599L25.4586 5.99056ZM24.7033 10.3721C24.7033 10.1758 24.6234 9.98744 24.4812 9.84859C24.339 9.70974 24.1461 9.63174 23.945 9.63174C23.7439 9.63174 23.551 9.70974 23.4088 9.84859C23.2666 9.98744 23.1867 10.1758 23.1867 10.3721H24.7033ZM4.25924 22.2789V21.5385C4.09642 21.5383 3.93785 21.5893 3.807 21.6839C3.67615 21.7785 3.57997 21.9117 3.53268 22.0638C3.4854 22.216 3.48952 22.3789 3.54443 22.5286C3.59935 22.6782 3.70215 22.8067 3.83762 22.8949L4.25924 22.2789ZM5.77283 5.99056L6.48413 5.73143C6.43244 5.59625 6.34142 5.47876 6.22225 5.39341C6.10309 5.30806 5.96098 5.25857 5.81339 5.25101C5.6658 5.24346 5.51917 5.27818 5.39153 5.35091C5.26388 5.42363 5.16078 5.53119 5.0949 5.66035L5.77283 5.99056ZM11.8302 19.3174L12.3671 19.8401C12.4582 19.7508 12.5245 19.6404 12.5596 19.5192C12.5948 19.398 12.5977 19.2701 12.5681 19.1474C12.5385 19.0248 12.4774 18.9116 12.3904 18.8185C12.3035 18.7255 12.1937 18.6556 12.0714 18.6155L11.8302 19.3174ZM22.7863 7.43134L22.2252 7.92887L22.4982 8.22354L22.9001 8.16431L22.7863 7.43134ZM24.7033 6.03943C24.7807 7.19145 24.7079 7.89037 24.5168 8.41752C24.3318 8.92838 24.0072 9.34891 23.4203 9.89827L24.4698 10.9674C25.1341 10.3455 25.6467 9.73539 25.947 8.91209C26.2397 8.1036 26.2988 7.16776 26.2154 5.9417L24.7018 6.03943H24.7033ZM24.7033 11.4501V10.3736H23.1867V11.4516H24.7033V11.4501ZM14.1021 10.4935V11.9136H15.6188V10.4935H14.1021ZM14.1021 11.9136V12.654H15.6188V11.9136H14.1021ZM19.4634 5.25018C18.7585 5.25057 18.0607 5.38651 17.4096 5.65022C16.7586 5.91393 16.1671 6.30026 15.669 6.78715C15.1709 7.27404 14.7759 7.85196 14.5065 8.4879C14.2371 9.12384 14.0987 9.80536 14.0991 10.4935H15.6157C15.6153 9.99969 15.7146 9.5106 15.9078 9.05422C16.1011 8.59783 16.3845 8.18309 16.742 7.83368C17.0994 7.48427 17.5239 7.20704 17.9911 7.01783C18.4583 6.82862 18.9591 6.73113 19.4649 6.73094V5.25018H19.4634ZM23.1852 11.4501C23.1867 17.841 17.8891 23.0192 11.357 23.0192V24.5C18.7278 24.5 24.7033 18.6569 24.7033 11.4501H23.1867H23.1852ZM5.06305 6.24969C5.8881 8.39975 8.98201 12.654 14.8604 12.654V11.1732C9.83132 11.1732 7.17268 7.53055 6.48261 5.73143L5.06154 6.24969H5.06305ZM5.0949 5.66035C3.507 8.76402 3.26282 11.7759 4.41697 14.3405C5.56809 16.8978 8.04473 18.8642 11.5906 20.0192L12.0714 18.6155C8.80305 17.5493 6.73589 15.8139 5.80468 13.7438C4.87651 11.6811 5.01149 9.13865 6.45228 6.32077L5.0949 5.66035ZM11.2933 18.7946C10.3803 19.6875 7.63525 21.5385 4.25924 21.5385V23.0192C8.1509 23.0192 11.2615 20.9225 12.3671 19.8401L11.2933 18.7946ZM23.349 6.93528C22.8587 6.40436 22.2595 5.97999 21.5904 5.6897C20.9213 5.3994 20.1971 5.24966 19.4649 5.25018V6.73094C20.5584 6.73094 21.5427 7.19145 22.2252 7.92887L23.3475 6.93528H23.349ZM22.9001 8.16431C24.1081 7.97161 25.2114 7.37865 26.0243 6.48513L24.8959 5.49599C24.3177 6.13381 23.5329 6.55873 22.6726 6.69984L22.9001 8.16431ZM3.83762 22.8949C6.3264 24.5148 8.93499 24.5 11.357 24.5V23.0192C8.88494 23.0192 6.73437 23.003 4.68086 21.6629L3.83762 22.8949Z"
+                                                                fill="#707377"
+                                                            ></path>
+                                                        </svg>
+                                                    </a>
+                                                    <a href="https://t.me/CoLearningUz" target="_blank">
+                                                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" class="social-icon">
+                                                            <path
+                                                                d="M21.6253 6.00184C21.3788 6.01977 21.1369 6.07761 20.9089 6.17308H20.9058C20.6869 6.25986 19.6464 6.69758 18.0645 7.36107L12.3956 9.74856C8.3279 11.461 4.3293 13.1474 4.3293 13.1474L4.37691 13.129C4.37691 13.129 4.10123 13.2196 3.81325 13.4169C3.63535 13.5302 3.48226 13.6783 3.36325 13.8524C3.22195 14.0597 3.1083 14.3769 3.15053 14.7048C3.21965 15.2592 3.57904 15.5917 3.83706 15.7753C4.09816 15.9611 4.34696 16.0479 4.34696 16.0479H4.35311L8.1029 17.3111C8.27108 17.851 9.24558 21.0548 9.4798 21.7927C9.61802 22.2335 9.75241 22.5092 9.92059 22.7196C10.002 22.8271 10.0972 22.917 10.2116 22.9892C10.2711 23.0238 10.3345 23.0511 10.4005 23.0706L10.3621 23.0614C10.3737 23.0644 10.3829 23.0736 10.3913 23.0767C10.422 23.0852 10.4428 23.0882 10.4819 23.0944C11.0756 23.2741 11.5524 22.9055 11.5524 22.9055L11.5793 22.884L13.7932 20.8682L17.5039 23.7149L17.5883 23.751C18.3617 24.0904 19.1449 23.9015 19.5589 23.5682C19.9758 23.2326 20.1379 22.8033 20.1379 22.8033L20.1647 22.7342L23.0322 8.04452C23.1136 7.68206 23.1343 7.34264 23.0445 7.0132C22.9518 6.67978 22.7379 6.39302 22.4447 6.20918C22.1985 6.05952 21.9131 5.98728 21.6253 6.00184ZM21.5478 7.57609C21.5447 7.62447 21.5539 7.61909 21.5324 7.71201V7.72046L18.6919 22.2573C18.6796 22.2781 18.6588 22.3234 18.602 22.3687C18.5421 22.4163 18.4945 22.4462 18.2449 22.3472L13.7065 18.8677L10.965 21.3665L11.5409 17.6882L18.956 10.7768C19.2617 10.4927 19.1595 10.4328 19.1595 10.4328C19.181 10.0841 18.698 10.3306 18.698 10.3306L9.34771 16.1231L9.34464 16.1078L4.86301 14.5988V14.5957L4.85149 14.5934C4.85935 14.5908 4.86704 14.5877 4.87453 14.5842L4.89911 14.5719L4.92291 14.5635C4.92291 14.5635 8.92458 12.8771 12.9923 11.1646C15.0288 10.3068 17.0807 9.44292 18.6588 8.77636C20.2369 8.11364 21.4034 7.62754 21.4695 7.60143C21.5324 7.57686 21.5025 7.57609 21.5478 7.57609Z"
+                                                                fill="#707377"
+                                                            ></path>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="bottom">
+                                        <div class="row">
+                                            <div class="col-md-6 col-lg-8 col-12">
+                                                <div class="copyright"><p>© Talorants.uz 2020 - 2022 | Barcha huquqlar himoyalangan</p></div>
+                                            </div>
+                                            <div class="col-md-6 col-lg-4 col-12 topp">
+                                                <a href="https://projectmanagers.uz/ru" target="_blank" class="project-managers">
+                                                    <div class="developers">
+                                                        <img src="~/Image/footer-logo-white.1e43d68.svg" alt="" />
+                                                        <p>
+                                                            Loyiha Talorants.uz<br />
+                                                            jamoasi <span> tomonidan ishlab chiqildi </span>
+                                                        </p>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <img src="~/Image/planet.b6ac898.svg" alt="" class="planet" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    @* <footer class="border-top footer text-muted">
-        <div class="container">
-        &copy; 2022 - InternshipTask - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-        </footer> *@
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    </div>
+    
+    <script>
+        window.__NUXT__ = { config: {}, staticAssetsBase: void 0 };
+    </script>
+    <script src="~/js/7e62f33.js"></script>
+    <script src="~/js/dc3cb95.js"></script>
+    <script src="~/js/aa08cb7.js"></script>
+    <script src="~/js/bc8efb9.js"></script>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-
 </html>
