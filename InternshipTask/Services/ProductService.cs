@@ -41,7 +41,6 @@ public class ProductService : IProductService
         try
         {
             var createdProduct = await _productRepository.AddAsync(model);
-            await _productRepository.SaveChanges(userid);
 
             if (createdProduct is null)
                 return new("Product is not created");
@@ -62,7 +61,6 @@ public class ProductService : IProductService
         try
         {
             var result = await _productRepository.Remove(existingProduct!);
-            await _productRepository.SaveChanges(userId);
 
             return new(true) { Data = result };
         }
@@ -127,7 +125,6 @@ public class ProductService : IProductService
 
             _productRepository.SaveAudit(oldProduct!, model);
 
-            await _productRepository.SaveChanges(user);
 
             return new(true) { Data = model };
         }

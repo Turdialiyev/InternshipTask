@@ -59,9 +59,4 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         return entry.Entity;
     }
 
-    public async ValueTask<int> SaveChanges(string userId)
-    {
-        var result = await _context.SaveChangesAsync(userId);
-        return result;
-    }
 }

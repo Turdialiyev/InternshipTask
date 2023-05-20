@@ -12,5 +12,4 @@ public interface IGenericRepository<TEntity> where TEntity : class
     ValueTask<TEntity> Remove(TEntity entity);
     ValueTask RemoveRange(IEnumerable<TEntity> entities);
     ValueTask<TEntity> Update(TEntity entity);
-    ValueTask<int> SaveChanges(string userId);
 }
